@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>GMassMailer – Support & Documentation</title>
+  <style>
+    :root {
+      --primary: #0073e6;
+      --dark: #222;
+      --light: #f9f9f9;
+      --bg: #ffffff;
+      --accent: #fefcbf;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background: var(--light);
+      margin: 0;
+      padding: 0;
+      color: var(--dark);
+    }
+
+    header, footer {
+      background: var(--primary);
+      color: #fff;
+      text-align: center;
+      padding: 30px 20px;
+    }
+
+    header h1 {
+      margin: 0;
+      font-size: 2em;
+    }
+
+    main {
+      max-width: 1000px;
+      margin: auto;
+      background: var(--bg);
+      padding: 40px 20px;
+    }
+
+    section {
+      margin-bottom: 50px;
+    }
+
+    h2 {
+      color: var(--primary);
+      border-bottom: 2px solid var(--accent);
+      padding-bottom: 5px;
+      margin-bottom: 15px;
+    }
+
+    p, li {
+      line-height: 1.7;
+    }
+
+    ul, ol {
+      margin-left: 20px;
+    }
+
+    code {
+      background-color: #eee;
+      padding: 2px 6px;
+      border-radius: 4px;
+      font-family: monospace;
+      color: #c7254e;
+    }
+
+    .highlight {
+      background: var(--accent);
+      padding: 10px 15px;
+      border-left: 5px solid #f7c948;
+      margin: 20px 0;
+      font-weight: bold;
+    }
+
+    a {
+      color: var(--primary);
+      text-decoration: none;
+    }
+
+    a:hover {
+      text-decoration: underline;
+    }
+
+    footer {
+      font-size: 0.9em;
+    }
+
+    @media (max-width: 768px) {
+      header h1 {
+        font-size: 1.5em;
+      }
+
+      main {
+        padding: 30px 15px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>GMassMailer – Chrome Extension</h1>
+    <p>Email Campaign Manager for Gmail</p>
+  </header>
+
+  <main>
+    <section>
+      <h2>Overview</h2>
+      <p>GMassMailer is a Chrome extension that automates sending personalized Gmail campaigns. Users can upload a CSV file of contacts, configure sending intervals, and set daily limits. It ensures a seamless experience while complying with Gmail's policies.</p>
+    </section>
+
+    <section>
+      <h2>Main Features</h2>
+      <ul>
+        <li>Gmail OAuth2 Authentication with token refresh</li>
+        <li>Upload & validate CSV with up to 10,000 contacts</li>
+        <li>Custom intervals, max emails per day, and daily start time</li>
+        <li>Live campaign tracking with progress bar and countdown</li>
+        <li>Auto CSV download with sent timestamps on stop or completion</li>
+        <li>Client-side data storage using <code>chrome.storage.local</code></li>
+        <li>Centralized error handling and safe messaging</li>
+      </ul>
+    </section>
+
+    <section>
+      <h2>Getting Started</h2>
+      <ol>
+        <li>Open the GMassMailer extension popup.</li>
+        <li>Authenticate your Gmail using the <strong>Authenticate</strong> button.</li>
+        <li>Upload a CSV file with these columns: <code>First name</code>, <code>Last name</code>, <code>Email</code>, <code>Subject</code>, <code>Body</code>.</li>
+        <li>Configure:
+          <ul>
+            <li>Interval between emails</li>
+            <li>Max emails to send per day</li>
+            <li>Daily start time</li>
+          </ul>
+        </li>
+        <li>Click <strong>Start Sending</strong> and monitor progress.</li>
+        <li>Click <strong>Stop</strong> anytime to halt the campaign and download the CSV.</li>
+      </ol>
+      <div class="highlight">Tip: GMassMailer automatically resumes the campaign each day based on your settings!</div>
+    </section>
+
+    <section>
+      <h2>CSV Guidelines</h2>
+      <p>CSV files must be under 5MB and contain up to 10,000 valid rows. The extension auto-detects headers and validates email formats. Invalid rows are skipped.</p>
+      <p>On campaign completion, a timestamped CSV is downloaded with a new column: <code>Sent Date</code>.</p>
+    </section>
+
+    <section>
+      <h2>Authentication Details</h2>
+      <p>Uses <code>chrome.identity.getAuthToken({ interactive: true })</code> to initiate OAuth2 login. Access tokens are stored securely. If expired, the token refreshes automatically, or the user is prompted to re-authenticate.</p>
+    </section>
+
+    <section>
+      <h2>Campaign Tracking</h2>
+      <p>The popup displays real-time stats like sent count, progress, next email time, and a countdown to the next reset. The UI refreshes every 3 seconds to keep you updated.</p>
+    </section>
+
+    <section>
+      <h2>Storage & State</h2>
+      <p>All user data and state are stored locally via <code>chrome.storage.local</code> including:</p>
+      <ul>
+        <li><code>accessToken</code>, <code>contacts</code>, <code>interval</code>, <code>maxPerDay</code></li>
+        <li><code>sentToday</code>, <code>isRunning</code>, <code>campaignCompleted</code></li>
+        <li><code>lastSentTime</code>, <code>nextEmailTime</code>, and more</li>
+      </ul>
+    </section>
+
+    <section>
+      <h2>Error Handling</h2>
+      <p>All errors—authentication, invalid CSVs, network issues—are caught and mapped to user-friendly messages via a centralized handler. Technical logs are sent to the console for debugging.</p>
+    </section>
+
+    <section>
+      <h2>Security & Privacy</h2>
+      <ul>
+        <li>OAuth2-based Gmail access (Chrome Identity API)</li>
+        <li>All data stored locally; no external servers</li>
+        <li>User input/output is sanitized to prevent XSS/code injection</li>
+      </ul>
+    </section>
+
+    <section>
+      <h2>Developer Notes</h2>
+      <ul>
+        <li><code>popup.js</code> handles UI, state, validation</li>
+        <li><code>background.js</code> manages email logic (via messaging)</li>
+        <li>Use <code>window.testCompletion</code> for testing</li>
+        <li>Modular codebase, easy to extend</li>
+      </ul>
+    </section>
+
+    <section>
+      <h2>Need Help?</h2>
+      <p>For issues, questions, or bug reports, contact:</p>
+      <div class="highlight">
+        Email: <a href="mailto:support@gmassmailer.com">support@gmassmailer.com</a>
+      </div>
+    </section>
+
+    <section>
+      <h2>Legal</h2>
+      <ul>
+        <li><a href="privacy_policy.html" target="_blank">Privacy Policy</a></li>
+        <li><a href="terms_of_service.html" target="_blank">Terms of Service</a></li>
+      </ul>
+    </section>
+  </main>
+
+  <footer>
+    <p>&copy; 2025 GMassMailer. All rights reserved.</p>
+  </footer>
+</body>
+</html>
